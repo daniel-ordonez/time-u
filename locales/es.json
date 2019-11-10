@@ -1,0 +1,10 @@
+{
+  "timer": {
+    "label": "Tiempo",
+    "start": "Inicia",
+    "rest": "Descansa",
+    "pause": "Pausa",
+    "stop": "Detenido",
+    "resume": "Continúa"
+  }
+}

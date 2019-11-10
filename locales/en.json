@@ -1,0 +1,10 @@
+{
+  "timer": {
+    "label": "Timer",
+    "start": "Start",
+    "rest": "Rest",
+    "pause": "Paused",
+    "stop": "Stopped",
+    "resume": "Continue"
+  }
+}

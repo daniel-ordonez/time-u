@@ -1,0 +1,23 @@
+{
+  "name": "time-u",
+  "version": "1.0.0",
+  "description": "Get healthy timing your routines",
+  "author": "Daniel Ordonez",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "@nuxtjs/pwa": "^3.0.0-0",
+    "easytimer.js": "^4.0.2",
+    "nuxt": "^2.0.0",
+    "nuxt-vuex-localstorage": "^1.2.6",
+    "resize-observer-polyfill": "^1.5.1",
+    "speak-tts": "^2.0.8",
+    "vue-i18n": "^8.15.0"
+  },
+  "devDependencies": {}
+}
