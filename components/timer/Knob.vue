@@ -18,7 +18,7 @@ export default {
     size: { type: Number, default: 200 }
   },
   mounted () {
-    this.$el.addEventListener('click', e => {
+    this.$el.querySelector('.knob_content').addEventListener('click', e => {
       this.$emit('click', e)
     })
   },
@@ -61,6 +61,11 @@ export default {
 }
 .knob_content:hover {
   cursor: pointer;
+  z-index: 1;
+}
+.knob_content>* {
+  pointer-events: none;
+  user-select: none;
 }
 .knob_content {
   position: absolute;
@@ -86,5 +91,7 @@ export default {
   bottom: 0;
   position: absolute;
   transform: rotate(-90deg);
+  pointer-events: none;
+  user-select: none;
 }
 </style>

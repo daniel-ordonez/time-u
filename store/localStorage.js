@@ -21,5 +21,11 @@ export const mutations = {
 export const getters = {
   lang (state) {
     return state.langs[state.locale]
+  },
+  timerSet () {
+    return [
+      { targetTime: 10 },
+      { targetTime: 5, rest: true }
+    ]
   }
 }

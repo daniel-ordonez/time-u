@@ -1,21 +1,16 @@
 <template>
-  <section id="section-timer" :resting="timerStateRest">
+  <section id="section-timer" :resting="timerRest">
     <div class="timer-tools">
 
       <div class="timer-option">
         <transition name="button-pop">
 
-          <button v-if="timerStateRest"
-            key="button-play"
-            class="btn--icon" @click="resumeTimer">
-            <i class="uil uil-pause"></i>
-          </button>
-          <button v-else-if="timerStatePlay"
+          <button v-if="timerActive"
             key="button-pause"
             class="btn--icon" @click="pauseTimer">
             <i class="uil uil-pause"></i>
           </button>
-          <button v-else-if="timerStatePause"
+          <button v-else-if="timerPaused"
             key="button-play"
             class="btn--icon" @click="resumeTimer">
             <i class="uil uil-play"></i>
@@ -26,25 +21,19 @@
 
       <div class="timer-count" >
         <transition name="button-pop">
-          <heart v-if="timerStateRest" 
+          <heart v-if="timerRest" 
             key="heart"
             :style="`--heart-size: ${knobSize}px`"
           >
-            <stack>
-              <small>{{$t('timer.label')}}</small>
-              <strong>{{timeLabel}}</strong>
-            </stack>
+            <slot/>
           </heart>
           <knob v-else ref="knob" 
             key="knob"
             :style="`--knob-size: ${knobSize}px`"
-            :size.sync="knobSize" 
-            @click="startTimer"
+            :size.sync="knobSize"
+            @click="$emit('click')"
           >
-            <stack>
-              <small>{{$t('timer.label')}}</small>
-              <strong>{{timeLabel}}</strong>
-            </stack>
+            <slot/>
           </knob>
         </transition>
       </div>
@@ -52,18 +41,15 @@
       <div class="timer-option">
         <transition name="button-pop">
           
-          <button v-if="timerStateRest"
-            key="button-play"
-            class="btn--icon" @click="resumeTimer">
+          <button v-if="timerActive"
+            key="button-pause"
+            class="btn--icon" @click="skipTimer">
             <i class="uil uil-skip-forward-alt"></i>
           </button>
-          <button v-else-if="timerStatePlay"
+          <button v-else-if="timerPaused"
+            key="button-play"
             class="btn--icon" @click="stopTimer">
             <i class="uil uil-square"></i>
-          </button>
-          <button v-else-if="timerStatePause"
-            class="btn--icon" @click="stopTimer">
-            <i class="uil uil-redo"></i>
           </button>
 
         </transition>
@@ -77,46 +63,30 @@
 import Knob from './Knob'
 import Heart from './Heart'
 import Timer from 'easytimer.js'
-const TIMER_STATES = {
-  'IDLE': null,
-  'PLAY': 1,
-  'PAUSE': 2,
-  'STOP': 0,
-  'REST': -1
-}
 export default {
   name: 'SectionTimer',
   components: { Knob, Heart },
   props: {
-    timerSet: { type: Array, default: () => [] }
+    timerOptions: { type: Object, default: () => ({}) }
   },
   data: () => ({
     knobSize: 200,
     secondsCount: 0,
-    timerIndex: 0,
     timer: null,
-    timerState: null
+    timerActive: false,
+    timerPaused: false
   }),
   computed: {
-    currentTimer () {
-      let {timerSet} = this
-      let {timerIndex} = this.$data
-      return this.timerSet.length && timerIndex < timerSet.length
-        ? timerSet[timerIndex] : {}
-    },
+    currentTimer () { return this.timerOptions },
+    timerRest () { return this.currentTimer.rest },
     targetTime () { return this.currentTimer.targetTime || 0 },
-    timerStateIdle () { return this.timerState === TIMER_STATES.IDLE },
-    timerStatePlay () { return this.timerState === TIMER_STATES.PLAY },
-    timerStatePause () { return this.timerState === TIMER_STATES.PAUSE },
-    timerStateRest () { return this.timerState === TIMER_STATES.REST },
-    countdown () { return Math.max(0, this.targetTime - this.secondsCount) },
-    timeLabel () {
-      return this.timerStateIdle
-        ? this.targetTime : this.countdown
-    }
+    countdown () { return Math.max(0, this.targetTime - this.secondsCount ) }
   },
   mounted () {
     const timer = new Timer()
+    timer.addEventListener('started', e => { this.timerActive = true; this.timerPaused = false; })
+    timer.addEventListener('paused', e => { this.timerActive = false; this.timerPaused = true; })
+    timer.addEventListener('stopped', e => { this.timerActive = false; this.timerPaused = false; })
     timer.addEventListener('secondsUpdated', e => {
       let {seconds} = timer.getTimeValues()
       this.countSeconds(seconds)
@@ -124,12 +94,33 @@ export default {
     this.timer = timer
   },
   methods: {
-    addTime (t) {
-      this.targetTime = Math.max(0, this.targetTime + t)
+    startTimer () {
+      if (this.timer) {
+        this.secondsCount = 0
+        this.updateKnob(1)
+        this.$emit('started', this.currentTimer)
+        setTimeout(() => {
+          this.timer && this.timer.start()
+        }, 1000)
+      }
+    },
+    pauseTimer () {
+      if (this.timer) {
+        this.timer.pause()
+        this.$emit('paused')
+      }
+    },
+    resumeTimer () {
+      if (this.timer) {
+        this.$emit('resumed')
+        setTimeout(() => {
+          this.timer.start()
+        }, 1000)
+      }
     },
     timeout () {
+      console.log('timeout')
       this.$emit('timeout')
-      this.timerState = TIMER_STATES.REST
     },
     countSeconds (seconds) {
       let {targetTime} = this
@@ -143,38 +134,17 @@ export default {
       this.updateKnob(percent)
     },
     updateKnob (percent) {
-      this.$refs.knob.updateArc(percent)
-    },
-    startTimer () {
-      if (this.targetTime > 0 && this.timer) {
-        this.$emit('start')
-        this.timerState = TIMER_STATES.PLAY
-        this.secondsCount = 0
-        this.updateKnob(1)
-        setTimeout(() => {
-          this.timer && this.timer.start()
-        }, 1000)
-      }
-    },
-    pauseTimer () {
-      if (this.timer) {
-        this.timer.pause()
-        this.timerState = TIMER_STATES.PAUSE
-        this.$emit('pause')
-      }
-    },
-    resumeTimer () {
-      if (this.timer) {
-        this.timerState = TIMER_STATES.PLAY
-        this.$emit('resume')
-        setTimeout(() => {
-          this.timer.start()
-        }, 1000)
-      }
+      let {knob} = this.$refs
+      knob && knob.updateArc(percent)
     },
     stopTimer () {
-      this.timer && this.timer.stop()
-    }
+      if (this.timer) {
+        this.timer.stop()
+        this.$emit('stopped')
+      }
+    },
+    skipTimer () {}
+
   }
 }
 </script>
@@ -197,8 +167,16 @@ export default {
   display: grid;
   grid-template-columns: min-content 1fr min-content;
   grid-template-rows: 1fr;
+  grid-template-areas: "opl time opr";
   grid-auto-flow: column;
-  grid-template-areas: "opl time opr"
+}
+@media screen and (max-width: 500px){
+  .timer-tools {
+    grid-template-areas: "time time"
+    "opl opr";
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr auto;
+  }
 }
 .timer-count {
   grid-area: time;
@@ -241,7 +219,7 @@ export default {
 @keyframes button-pop {
   from {
     transform: scale(.9);
-    opacity: .5;
+    opacity: 0;
   }
   90% {
     transform: scale(1.1);

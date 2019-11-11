@@ -5,6 +5,8 @@
     "rest": "Descansa",
     "pause": "Pausa",
     "stop": "Detenido",
-    "resume": "Continúa"
+    "resume": "Continúa",
+    "cta": "Iniciar",
+    "completed": "Completado"
   }
 }

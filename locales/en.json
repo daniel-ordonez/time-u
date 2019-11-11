@@ -5,6 +5,8 @@
     "rest": "Rest",
     "pause": "Paused",
     "stop": "Stopped",
-    "resume": "Continue"
+    "resume": "Continue",
+    "cta": "Start",
+    "completed": "Completed"
   }
 }
