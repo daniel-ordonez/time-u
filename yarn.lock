@@ -6128,6 +6128,11 @@ scriptjs@^2.5.9:
   resolved "https://registry.yarnpkg.com/scriptjs/-/scriptjs-2.5.9.tgz#343915cd2ec2ed9bfdde2b9875cd28f59394b35f"
   integrity sha512-qGVDoreyYiP1pkQnbnFAUIS5AjenNwwQBdl7zeos9etl+hYKWahjRTfzAZZYBv5xNHx7vNKCmaLDQZ6Fr2AEXg==
 
+scrollbooster@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/scrollbooster/-/scrollbooster-1.1.0.tgz#7da2febe93cb9035c0d36b8bee96a4a0cc890291"
+  integrity sha512-6JHNzOYbPIJUtVcLYMtN1PVaO3FSBmTObbskM5boY78DX2hlBLOa/iqMyfChIB9m/F9NCD1xQ/jNSmeJDkry0A==
+
 semver@^5.3.0, semver@^5.4.1, semver@^5.5.0, semver@^5.5.1, semver@^5.6.0:
   version "5.7.1"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.7.1.tgz#a954f931aeba508d307bbf069eff0c01c96116f7"

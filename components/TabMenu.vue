@@ -1,32 +1,34 @@
 <template>
   <div id="tab-menu">
-    <div class="tab-menu_bg">
-      <div class="tab-menu_bg_rect"/>
-      <div class="tab-menu_bg_mark" 
-        :style="`--mark-offset-x: ${markOffset.x}; --mark-offset-y: ${markOffset.y}`"
-      />
+    <div class="tab-menu-wrapper">
+      <div class="tab-menu_bg">
+        <div class="tab-menu_bg_rect"/>
+        <div class="tab-menu_bg_mark" 
+          :style="`--mark-offset-x: ${markOffset.x}; --mark-offset-y: ${markOffset.y}`"
+        />
+      </div>
+      <nav class="tab-menu">
+        <button v-for="(item, index) in options" 
+          :key="`option-${index}`"
+          :active="item === activePage"
+          class="tab-btn"
+          @click="changePage(index)"
+        >
+          <div class="tab-btn_icon">
+            <i :class="`uil uil-${item.icon}`"></i>
+          </div>
+        </button>
+      </nav>
+      <svg class='filter' xmlns="http://www.w3.org/2000/svg" version="1.1">
+        <defs>
+          <filter id='goo'>
+            <feGaussianBlur in='SourceGraphic' stdDeviation='10' result='blur'/>
+            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -3" result="goo" />
+            <feBlend in='SourceGraphic' in2='goo' operator="atop"/>
+          </filter>
+        </defs>
+      </svg>
     </div>
-    <nav class="tab-menu">
-      <button v-for="(item, index) in options" 
-        :key="`option-${index}`"
-        :active="item === activePage"
-        class="tab-btn"
-        @click="changePage(index)"
-      >
-        <div class="tab-btn_icon">
-          <i :class="`uil uil-${item.icon}`"></i>
-        </div>
-      </button>
-    </nav>
-    <svg class='filter' xmlns="http://www.w3.org/2000/svg" version="1.1">
-      <defs>
-        <filter id='goo'>
-          <feGaussianBlur in='SourceGraphic' stdDeviation='10' result='blur'/>
-          <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -3" result="goo" />
-          <feBlend in='SourceGraphic' in2='goo' operator="atop"/>
-        </filter>
-      </defs>
-    </svg>
   </div>
 </template>
 
@@ -73,12 +75,14 @@ export default {
 
 <style>
 #tab-menu {
+  --offset: 8px;
+}
+.tab-menu-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--menu-color, rgba(0,0,0,.06));
+  background: var(--menu-color, rgb(223,223,223));
   position: relative;
-  --offset: 8px;
 }
 .tab-menu_bg {
   position: absolute;
@@ -92,7 +96,7 @@ export default {
 }
 .tab-menu_bg_rect {
   position: absolute;
-  top: 0;
+  bottom: 0;
   background-color: var(--bg-color);
 }
 .tab-menu_bg_mark {
@@ -135,15 +139,23 @@ svg.filter {
   #tab-menu {
     --button-size: 4rem;
     --icon-size: 1.618rem;
-    padding-top: var(--offset);
+    height: calc(var(--button-size) + var(--offset));
+  }
+  .tab-menu-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding-bottom: var(--offset);
   }
   .tab-menu_bg_rect {
-    width: 100%;
+    width: 120%;
     height: var(--offset);
-    left: 0;
+    left: -10%;
+    right: 10%;
   }
   .tab-menu_bg_mark {
-    top: calc(var(--offset) * -1);
+    bottom: calc(var(--offset) * -1);
     left: calc((var(--offset) * .5) + var(--mark-offset-x));
   }
   .tab-menu {
@@ -151,19 +163,23 @@ svg.filter {
   }
   
   .tab-btn[active] i {
-    top: calc(50% - calc(2 * var(--offset)));
+    bottom: calc(50% - calc(2 * var(--offset)));
   }
 }
 @media screen and (min-width: 500px){
   #tab-menu {
-    height: 100%;
-    position: relative;
-    padding-right: var(--offset);
     --button-size: 6rem;
     --icon-size: 2rem;
   }
-  .tab-menu_bg_rect {
+  .tab-menu-wrapper {
     height: 100%;
+    position: relative;
+    padding-right: var(--offset);
+  }
+  .tab-menu_bg_rect {
+    top: -10%;
+    bottom: -10%;
+    height: 120%;
     width: var(--offset);
     right: 0;
   }

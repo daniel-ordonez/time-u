@@ -11,6 +11,7 @@
         @resumed="resumed"
         @timeout="nextTimer"
         @click="!targetTime && nextTimer()"
+        @skip="nextTimer"
       >
         <transition name="button-pop">
           <stack v-if="timerRunning">
@@ -22,6 +23,10 @@
           </div>
         </transition>
       </section-timer>
+      <section-graph
+        :itemIndex="timerIndex"
+        :itemPercent="timerPercent"
+      />
     </stack>
   </div>
 </template>
@@ -29,6 +34,7 @@
 <script>
 import Speech from 'speak-tts'
 import SectionTimer from './SectionTimer'
+import SectionGraph from './SectionGraph'
 const TIMER_STATES = {
   'IDLE': false,
   'RUNNING': 1,
@@ -36,10 +42,11 @@ const TIMER_STATES = {
 }
 export default {
   name: 'PageTimer',
-  components: { SectionTimer },
+  components: { SectionTimer, SectionGraph },
   data: () => ({
     speech: null,
     timerIndex: -1,
+    timerPercent: 0,
     timerState: null
   }),
   watch: {
@@ -48,6 +55,7 @@ export default {
     }
   },
   computed: {
+    volume () { return .1 },
     timerIdle () { return this.timerState === TIMER_STATES.IDLE },
     timerRunning () { return this.timerState === TIMER_STATES.RUNNING },
     timerCompleted () { return this.timerState === TIMER_STATES.COMPLETED },
@@ -69,7 +77,7 @@ export default {
   mounted () {
     const speech = new Speech()
     if (speech.hasBrowserSupport()) {
-      speech.init({lang: this.lang})
+      speech.init({lang: this.lang, volume: this.volume})
       this.speech = speech
     } else {
       console.log('No speech synthesis support!')
@@ -80,6 +88,7 @@ export default {
     async nextTimer () {
       if (this.timerCompleted) return
       this.timerIndex += 1
+      this.timerPercent = 0
       await this.$nextTick()
       if (this.timerIndex < this.timerSet.length) {
         this.startTimer()
@@ -112,10 +121,15 @@ export default {
       this.timerState = TIMER_STATES.COMPLETED
       let {speech} = this.$data
       speech && speech.speak({text: this.$t('timer.completed')})
+      setTimeout(() => {
+        this.$store.commit('changePage', 'stats')
+      }, 1000)
     },
-    countdown (v) {
-      if (v <= 5 && v >= 0) {
-        createjs.Sound.play('beep')
+    countdown ({countdown, percent}) {
+      this.timerPercent = (1.0 - percent) * 100
+      if (countdown <= 5 && countdown >= 0) {
+        let instance = createjs.Sound.play('beep')
+        instance.volume = this.volume
       }
     }
   }
@@ -125,5 +139,7 @@ export default {
 <style>
 #page-timer {
   background: var(--bg-color);
+  overflow: auto;
+  height: 100%;
 }
 </style>

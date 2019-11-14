@@ -39,6 +39,7 @@ html {
   --bg-color--t2: rgba(255, 255, 255, 0.2);
   --bg-color--t5: rgba(255, 255, 255, 0.5);
   --bg-color--t8: rgba(255, 255, 255, 0.8);
+  --text-color--t05: rgba(0, 0, 0, 0.05);
   --text-color--t2: rgba(0, 0, 0, 0.2);
   --text-color--t5: rgba(0, 0, 0, 0.5);
   --text-color--t8: rgba(0, 0, 0, 0.8);
@@ -51,6 +52,7 @@ html {
 }
 [theme="dark"] {
   --bg-color: black;
+  --text-color--t05: rgba(255, 255, 255, 0.05);
   --text-color--t2: rgba(255, 255, 255, 0.2);
   --text-color--t5: rgba(255, 255, 255, 0.5);
   --text-color--t8: rgba(255, 255, 255, 0.8);

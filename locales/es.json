@@ -1,4 +1,8 @@
 {
+  "page": {
+    "time": "Tiempo",
+    "stats": "Datos"
+  },
   "timer": {
     "label": "Tiempo",
     "start": "Inicia",

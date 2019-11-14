@@ -119,7 +119,6 @@ export default {
       }
     },
     timeout () {
-      console.log('timeout')
       this.$emit('timeout')
     },
     countSeconds (seconds) {
@@ -129,8 +128,8 @@ export default {
         this.timer.stop()
         setTimeout(this.timeout, 1000)
       }
-      this.$emit('countdown', this.countdown)
       let percent = 1.0 - ((1.0 / Math.max(targetTime, 1)) * seconds)
+      this.$emit('countdown', {countdown: this.countdown, percent})
       this.updateKnob(percent)
     },
     updateKnob (percent) {
@@ -143,7 +142,12 @@ export default {
         this.$emit('stopped')
       }
     },
-    skipTimer () {}
+    skipTimer () {
+      if (this.timer) {
+        this.timer.stop()
+        this.$emit('skip')
+      }
+    }
 
   }
 }
@@ -194,6 +198,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  min-height: var(--button--size);
 }
 .button-pop-enter-active {
   animation: button-pop .5s cubic-bezier(0.215, 0.610, 0.355, 1);

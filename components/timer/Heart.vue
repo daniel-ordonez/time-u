@@ -3,7 +3,10 @@
     <div class="heart_content">
       <slot/>
     </div>
-    <div class="heart_shape"/>
+    <div class="heart-wrapper">
+      <div class="heart_shape"/>
+      <div class="heart_shape"/>
+    </div>
   </div>
 </template>
 
@@ -40,6 +43,14 @@ export default {
   text-align: center;
   z-index: 1;
 }
+.heart-wrapper {
+  animation: 1.6s infinite heartbeat;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
 .heart_shape {
   background-color: var(--bg-color);
   display: inline-block;
@@ -49,7 +60,7 @@ export default {
   transform: rotate(-45deg);
   width: var(--size);
   border-radius: 8px;
-  filter: drop-shadow(0 2px 4px var(--color-accent--t5))
+  filter: drop-shadow(0 2px 4px var(--color-accent--t5));
 }
 .heart_shape:before,
 .heart_shape:after {
@@ -60,6 +71,13 @@ export default {
   position: absolute;
   width: var(--size);
 }
+.heart-wrapper>.heart_shape:nth-child(2) {
+  transform: rotate(-45deg) scale(1.05);
+  animation: heartFade .8s infinite both;
+  --min-t: .2;
+  --max-t: .1;
+  opacity: var(--max-t);
+}
 
 .heart_shape:before {
   top: calc( var(--size) * -0.5);
@@ -69,5 +87,42 @@ export default {
 .heart_shape:after {
   left: calc( var(--size) * 0.5);
   top: 0;
+}
+ @keyframes heartFade {
+  0% {
+    opacity: var(--min-t);
+  }
+  14% {
+    opacity: var(--min-t);
+  }
+  28% {
+    opacity: var(--max-t);
+    transform: rotate(-45deg) scale(1.15);
+  }
+  42% {
+    opacity: var(--max-t);
+    transform: rotate(-45deg) scale(1.15);
+  }
+  70% {
+    opacity: var(--max-t);
+    transform: rotate(-45deg) scale(1.15);
+  }
+}
+@keyframes heartbeat {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.1);
+  }
+  40% {
+    transform: scale(1);
+  }
+  60% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 </style>

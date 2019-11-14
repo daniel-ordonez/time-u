@@ -1,4 +1,8 @@
 {
+  "page": {
+    "time": "Timer",
+    "stats": "Stats"
+  },
   "timer": {
     "label": "Timer",
     "start": "Start",

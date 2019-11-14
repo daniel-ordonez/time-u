@@ -25,7 +25,10 @@ export const getters = {
   timerSet () {
     return [
       { targetTime: 10 },
-      { targetTime: 5, rest: true }
+      { targetTime: 5, rest: true },
+      { targetTime: 10 },
+      { targetTime: 5, rest: true },
+      { targetTime: 10 }
     ]
   }
 }

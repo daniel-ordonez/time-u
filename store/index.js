@@ -1,21 +1,33 @@
 export const state = () => ({
   pages: [
-    {name: 'Settings', icon: 'cog'},
-    {name: 'Time', icon: 'stopwatch'},
-    {name: 'Analytics', icon: 'analytics'},
-    {name: 'Saved', icon: 'star'}
+    {name: 'time', icon: 'stopwatch'},
+    {name: 'stats', icon: 'analytics'}
   ],
-  pageIndex: 1
+  pageIndex: 0,
+  pageDirection: 1
 })
 export const mutations = {
-  changePage (state, index) {
-    if (index >= 0 && index < state.pages.length) {
-      state.pageIndex = index
+  changePage (state, key) {
+    if (typeof key === 'number') {
+      let index = key
+      if (index >= 0 && index < state.pages.length) {
+        state.pageDirection = Math.sign(index - state.pageIndex)
+        state.pageIndex = index
+      }
+    } else if (typeof key === 'string') {
+      let index = state.pages.findIndex(p => p.name === key )
+      if (typeof index === 'number') {
+        state.pageDirection = Math.sign(index - state.pageIndex)
+        state.pageIndex = index
+      }
     }
   }
 }
 export const getters = {
   activePage (state) {
     return state.pages[state.pageIndex]
+  },
+  pageName (_, getters) {
+    return getters.activePage.name
   }
 }
