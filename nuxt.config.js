@@ -12,7 +12,8 @@ export default {
       { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
     ],
     script: [
-      { src: 'https://code.createjs.com/1.0.0/soundjs.min.js' }
+      { src: 'https://code.createjs.com/1.0.0/soundjs.min.js' },
+      { src: 'https://code.createjs.com/1.0.0/tweenjs.min.js' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },

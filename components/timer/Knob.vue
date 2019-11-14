@@ -17,34 +17,44 @@ export default {
   props: {
     size: { type: Number, default: 200 }
   },
+  data: () => ({
+    arcPercent: 0
+  }),
   mounted () {
     this.$el.querySelector('.knob_content').addEventListener('click', e => {
       this.$emit('click', e)
     })
   },
+  computed: {
+    canvas () { return this.$el.querySelector('canvas') },
+    style () { return getComputedStyle(this.$el) },
+    percent: {
+      get () { return this.arcPercent },
+      set (percent) {
+        let {canvas, style, size} = this
+        let ctx = canvas.getContext('2d')
+        let strokeColor = style.getPropertyValue('--color-accent')
+        let s = size
+        let w = s * .1
+        let p = percent * 2
+        // Setup canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        if (p < 2 && p > 0) ctx.lineCap = 'round'
+        else ctx.lineCap = 'butt'
+        // Draw arc
+        ctx.beginPath()
+        ctx.arc(s/2, s/2, (s - w)/2, 0, p * Math.PI)
+        ctx.lineWidth = w
+        ctx.strokeStyle = strokeColor
+        ctx.stroke()
+        this.arcPercent = percent
+      } 
+    }
+  },
   methods: {
     getRGBA (str, a = 0) {
       let rgb = str.match(/\d+/g)
       return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${a})`
-    },
-    updateArc (percent = 0) {
-      const canvas = this.$el.querySelector('canvas')
-      let ctx = canvas.getContext('2d')
-      let style = getComputedStyle(this.$el)
-      let strokeColor = style.getPropertyValue('--color-accent')
-      let s = this.size
-      let w = s * .1
-      let p = percent * 2
-      // Setup canvas
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-      if (p < 2 && p > 0) ctx.lineCap = 'round'
-      else ctx.lineCap = 'butt'
-      // Draw arc
-      ctx.beginPath()
-      ctx.arc(s/2, s/2, (s - w)/2, 0, p * Math.PI)
-      ctx.lineWidth = w
-      ctx.strokeStyle = strokeColor
-      ctx.stroke()
     }
   }
 }

@@ -97,7 +97,8 @@ export default {
     startTimer () {
       if (this.timer) {
         this.secondsCount = 0
-        this.updateKnob(1)
+        let {knob} = this.$refs
+        knob && (knob.percent = 1)
         this.$emit('started', this.currentTimer)
         setTimeout(() => {
           this.timer && this.timer.start()
@@ -134,7 +135,7 @@ export default {
     },
     updateKnob (percent) {
       let {knob} = this.$refs
-      knob && knob.updateArc(percent)
+      knob && createjs.Tween.get(knob).to({percent}, 500, createjs.Ease.linear)
     },
     stopTimer () {
       if (this.timer) {
