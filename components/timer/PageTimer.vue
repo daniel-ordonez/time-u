@@ -121,6 +121,15 @@ export default {
       this.timerState = TIMER_STATES.COMPLETED
       let {speech} = this.$data
       speech && speech.speak({text: this.$t('timer.completed')})
+
+      let d = new Date()
+      let date = {
+        year: d.getFullYear(),
+        month: d.getMonth() + 1,
+        day: d.getDate()
+      }
+      let record = { date }
+      this.$store.commit('localStorage/addRecord', record)
       setTimeout(() => {
         this.$store.commit('changePage', 'stats')
       }, 1000)
